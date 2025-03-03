@@ -24,7 +24,7 @@ body {
 
 /* Container styles */
 .container, .public-container {
-  max-width: 1200px !important;
+  max-width: 600px !important;
   margin: 0 auto !important;
   padding: 0;
   min-height: 100vh;
