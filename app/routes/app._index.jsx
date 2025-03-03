@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { companies } from "../data/companies";
 import { useNavigate, useLoaderData } from "@remix-run/react";
 import CompanyCard from '../components/CompanyCard';
+import InteractiveNewscard from '../components/InteractiveNewscard';
 
 export function links() {
   return [{ rel: "stylesheet", href: "/styles/app.css" }];
@@ -49,6 +50,15 @@ export default function Index() {
     // In a real app, this would handle deletion from your data store
   };
 
+  // Process news to add company information
+  const processedNews = news.map(item => {
+    // If the item doesn't have a companyName, try to extract it
+    if (!item.companyName) {
+      item.companyName = findRelevantCompany(item.title + ' ' + item.summary);
+    }
+    return item;
+  });
+
   return (
     <div>
       <div className="tabs-container">
@@ -80,20 +90,13 @@ export default function Index() {
         {activeTab === 'NEWS' && (
           <div className="news-container">
             <div className="news-list">
-              {news.map((item) => (
-                <div key={item.id} className="news-card">
-                  <h3 className="news-title">{item.title}</h3>
-                  <p className="news-date">{new Date(item.date).toLocaleDateString()}</p>
-                  <p className="news-summary">{item.summary}</p>
-                  <div className="news-footer">
-                    <span className="news-company">{item.companyName}</span>
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="read-more">
-                      Read More →
-                    </a>
-                  </div>
-                </div>
+              {processedNews.map((item) => (
+                <InteractiveNewscard 
+                  key={item.id} 
+                  newsItem={item} 
+                />
               ))}
-              {news.length === 0 && (
+              {processedNews.length === 0 && (
                 <div className="no-news">No news articles found</div>
               )}
             </div>
